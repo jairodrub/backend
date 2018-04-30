@@ -1,13 +1,20 @@
 var express = require('express');
-var bodyParser = require('body-Parser');
+var bodyParser = require('body-parser');
 
 var proveedor = require('./routes/proveedor'); // importamos el archivo.js de routes  
+var factura = require('./routes/factura'); // Nuevo
+var usuario = require('./routes/usuario');
+var login = require('./routes/login');
+var cliente = require('./routes/cliente');
+var presupuesto = require('./routes/presupuesto');
+var sesion = require('./routes/sesion');
 
 var app = express();
 
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://localhost:27017/erp', {promiseLibrary: require('bluebird')})//recibe en primer lugar la url de la base de datos y luego importamos bluebird
+mongoose.connect('mongodb://localhost:27017/erp', {promiseLibrary: require('bluebird')})
+//recibe en primer lugar la url de la base de datos y luego importamos bluebird
             .then(()=>{
                 console.log('Conectado a la DB'); // .then para cuando funciona bien
             })
@@ -26,6 +33,12 @@ app.use(bodyParser.json({}));//para poder leer los  json
 app.use(bodyParser.urlencoded({'extended': false}));
 
 app.use('/proveedor', proveedor);
+app.use('/factura', factura); // Nuevo
+app.use('/usuario', usuario);
+app.use('/login', login);
+app.use('/cliente', cliente);
+app.use('/presupuesto', presupuesto);
+app.use('/sesion', sesion);
 
 app.listen(3000, function(){
     console.log('Servidor ok en puerto 3000');

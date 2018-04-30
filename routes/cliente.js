@@ -1,20 +1,14 @@
 var express = require ('express');
 var mongoose = require ('mongoose');
 
-var Proveedor = require('../models/proveedor.js');
-var autentoken = require('../middleware/autentoken')
+var Cliente = require('../models/cliente.js');
 
 var app = express();
 
 // Peticion GET
 
-app.get('/', (req, res, next) =>{
-
-    var desde = req.query.desde; // La consulta se llama desde
-    desde = Number(desde); // Así lo pasamos a número
-
-    Proveedor.find({}).skip(desde).limit(5).exec((err, proveedores)=>{ 
-        //find con solo las llaves busca todos los proveedores. //.exec() es para que se ejecute
+app.get('/', (reg, res, next) =>{
+    Cliente.find({}).exec((err, clientes)=>{ //find con solo las llaves busca todos los clientes. //.exec() es para que se ejecute
         if(err){
             return res.status(500).json({
                 ok: false,                        //este if es en caso de que tenga errores
@@ -22,20 +16,15 @@ app.get('/', (req, res, next) =>{
                 errores: err
             })
         }
-
-        Proveedor.count({}, (err, totales)=>{ // {} en este caso significa que queremos contar todos
-            res.status(200).json({
-                ok: true,
-                proveedores: proveedores,
-                totales: totales
-            })
-        
+        res.status(200).json({
+            ok: true,
+            clientes: clientes
         })
     });   
 });
 
 app.get('/:id', function(req, res, next){
-    Proveedor.findById(req.params.id, (err, proveedor)=>{
+    Cliente.findById(req.params.id, (err, cliente)=>{
         if(err){ //este if es en caso de que tenga errores
             return res.status(500).json({
                 ok: false,                       
@@ -45,18 +34,18 @@ app.get('/:id', function(req, res, next){
         }
         res.status(200).json({
             ok:true,
-            proveedor:proveedor
+            cliente:cliente
         })
     })
 })
 
 // Peticion POST
 
-app.post('/', (req, res, next)=>{
+app.post('/', (req, res)=>{
 
     var body = req.body;
 
-    var proveedor = new Proveedor({
+    var cliente = new Cliente({
         nombre: body.nombre,
         cif: body.cif,
         domicilio: body.domicilio,
@@ -68,18 +57,18 @@ app.post('/', (req, res, next)=>{
         contacto: body.contacto,
     })
 
-    proveedor.save((err, proveedorGuardado)=>{
+    cliente.save((err, clienteGuardado)=>{
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'Error al crear el proveedor',
+                mensaje: 'Error al crear el cliente',
                 errores: err
             })
         }
 
         res.status(200).json({
             ok: true,
-            proveedor: proveedorGuardado
+            cliente: clienteGuardado
         })
     });
 
@@ -89,11 +78,11 @@ app.post('/', (req, res, next)=>{
 
 app.put('/:id', function(req, res, next){  
     //findByIdAndUpdate --> busca un documento con su id y lo modifica
-    Proveedor.findByIdAndUpdate(req.params.id, req.body, function(err, datos){
+    Cliente.findByIdAndUpdate(req.params.id, req.body, function(err, datos){
         if (err) return next(err);
         res.status(201).json({
             ok: 'true',
-            mensaje: 'Proveedor actualizado'
+            mensaje: 'Cliente actualizado'
         });
     });
 
@@ -101,17 +90,17 @@ app.put('/:id', function(req, res, next){
 
 // Peticion DELETE
 
-app.delete('/:id', autentoken.verificarToken, function(req, res, error){
+app.delete('/:id', function(req, res, error){
     //findByIdAndRemove --> busca un documento con su id y lo elimina
-    Proveedor.findByIdAndRemove(req.params.id, function(err, datos){
+    Cliente.findByIdAndRemove(req.params.id, function(err, datos){
         if (err) return next(err);
-        var mensaje = 'Proveedor' + datos.nombre + 'eliminado'; // para ver el nombre del eliminado
+        var mensaje = 'Cliente' + datos.nombre + 'eliminado'; // para ver el nombre del eliminado
         res.status(201).json({
             ok: 'true',
             mensaje: mensaje
         });
     })
 
-});
+})
 
 module.exports = app;
