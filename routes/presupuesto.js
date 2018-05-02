@@ -7,7 +7,7 @@ var app = express();
 
 // Peticion GET
 
-app.get('/', (reg, res, next) =>{
+app.get('/', (req, res, next) =>{
     Presupuesto.find({}).exec((err, presupuestos)=>{ //find con solo las llaves busca todas las presupuestos. //.exec() es para que se ejecute
         if(err){
             return res.status(500).json({

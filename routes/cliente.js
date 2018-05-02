@@ -7,8 +7,14 @@ var app = express();
 
 // Peticion GET
 
-app.get('/', (reg, res, next) =>{
-    Cliente.find({}).exec((err, clientes)=>{ //find con solo las llaves busca todos los clientes. //.exec() es para que se ejecute
+app.get('/:nombre', (req, res, next) =>{
+
+    var nombre = req.params.nombre;
+
+    Cliente.find({nombre:{$regex:nombre,$options:'i'}}).exec((err, clientes)=>{ 
+        // $regex crea un objeto 'expresión regular' para encontrar texto de acuerdo a un patrón.
+        //find con solo las llaves busca todos los clientes. 
+        //.exec() es para que se ejecute // Ambas son como si escribiéramos en mongoDB
         if(err){
             return res.status(500).json({
                 ok: false,                        //este if es en caso de que tenga errores

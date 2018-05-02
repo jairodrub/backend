@@ -5,7 +5,7 @@ var Usuario = require('../models/usuario');
 
 var app = express();
 
-app.get('/', (reg, res, next) =>{
+app.get('/', (req, res, next) =>{
     Usuario.find({}).exec((err, usuarios)=>{ //find con solo las llaves busca todos los usuarios. 
         //.exec() es para que se ejecute
         if(err){
