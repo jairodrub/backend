@@ -7,11 +7,60 @@ var app = express();
 
 // Peticion GET
 
-app.get('/:nombre', (req, res, next) =>{
+app.get('/nombre/:nombre', (req, res, next) =>{
 
     var nombre = req.params.nombre;
 
     Cliente.find({nombre:{$regex:nombre,$options:'i'}}).exec((err, clientes)=>{ 
+        // $regex crea un objeto 'expresión regular' para encontrar texto de acuerdo a un patrón.
+        //find con solo las llaves busca todos los clientes. 
+        //.exec() es para que se ejecute // Ambas son como si escribiéramos en mongoDB
+        if(err){
+            return res.status(500).json({
+                ok: false,                        //este if es en caso de que tenga errores
+                mensaje: 'Error acceso DB',
+                errores: err
+            })
+        }
+        res.status(200).json({
+            ok: true,
+            clientes: clientes
+        })
+    });   
+});
+
+app.get('/localidad/:localidad', (req, res, next) =>{
+
+    var localidad = req.params.localidad;
+
+    Cliente.find({localidad:{$regex:localidad,$options:'i'}}).exec((err, clientes)=>{ 
+        // $regex crea un objeto 'expresión regular' para encontrar texto de acuerdo a un patrón.
+        //find con solo las llaves busca todos los clientes. 
+        //.exec() es para que se ejecute // Ambas son como si escribiéramos en mongoDB
+        if(err){
+            return res.status(500).json({
+                ok: false,                        //este if es en caso de que tenga errores
+                mensaje: 'Error acceso DB',
+                errores: err
+            })
+        }
+        res.status(200).json({
+            ok: true,
+            clientes: clientes
+        })
+    });   
+});
+
+app.get('/mixto/:nombre/:localidad', (req, res, next) =>{
+// Para decirle que van a llegar nombre y localidad
+    var nombre = req.params.nombre;
+    var localidad = req.params.localidad;
+
+    // Cliente.find({$or:[{nombre:{$regex:nombre,$options:'i'}},
+    // {localidad:{$regex:localidad, $options:'i'}}]})
+    Cliente.find({nombre:{$regex:nombre,$options:'i'},
+    localidad:{$regex:localidad, $options:'i'}})
+    .exec((err, clientes)=>{ 
         // $regex crea un objeto 'expresión regular' para encontrar texto de acuerdo a un patrón.
         //find con solo las llaves busca todos los clientes. 
         //.exec() es para que se ejecute // Ambas son como si escribiéramos en mongoDB
