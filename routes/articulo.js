@@ -1,30 +1,14 @@
 var express = require ('express');
 var mongoose = require ('mongoose');
 
-var Presupuesto = require('../models/presupuesto.js');
+var Articulo = require('../models/articulo.js');
 
 var app = express();
 
 // Peticion GET
 
-app.get('/', (req, res, next) =>{
-    Presupuesto.find({}).exec((err, presupuestos)=>{ //find con solo las llaves busca todas las presupuestos. //.exec() es para que se ejecute
-        if(err){
-            return res.status(500).json({
-                ok: false,                        //este if es en caso de que tenga errores
-                mensaje: 'Error acceso DB',
-                errores: err
-            })
-        }
-        res.status(200).json({
-            ok: true,
-            presupuestos: presupuestos
-        })
-    });   
-});
-
-app.get('/:id', function(req, res, next){
-    Presupuesto.findById(req.params.id, (err, presupuesto)=>{
+app.get('/',(req, res, next) => {
+    Articulo.find({}).exec((err, articulos)=>{
         if(err){ //este if es en caso de que tenga errores
             return res.status(500).json({
                 ok: false,                       
@@ -34,7 +18,23 @@ app.get('/:id', function(req, res, next){
         }
         res.status(200).json({
             ok:true,
-            presupuesto:presupuesto
+            articulos:articulos
+        })
+    });
+})
+
+app.get('/:id', function(req, res, next){
+    Articulo.findById(req.params.id, (err, articulo)=>{
+        if(err){ //este if es en caso de que tenga errores
+            return res.status(500).json({
+                ok: false,                       
+                mensaje: 'Error acceso DB',
+                errores: err
+            })
+        }
+        res.status(200).json({
+            ok:true,
+            articulo:articulo
         })
     })
 })
@@ -45,28 +45,22 @@ app.post('/', (req, res)=>{
 
     var body = req.body;
 
-    var presupuesto = new Presupuesto({
-        cliente: body.cliente,
-        fecha: body.fecha,
-        items: body.items,
-        suma: body.suma,
-        tipo: body.tipo,
-        iva: body.iva,
-        total: body.total,
+    var articulo = new Articulo({
+        referencia: body.referencia,
+        precio: body.precio
     })
 
-    presupuesto.save((err, presupuestoGuardado)=>{
+    articulo.save((err, articuloGuardado)=>{
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'Error al crear la presupuesto',
+                mensaje: 'Error al crear el articulo',
                 errores: err
             })
         }
 
         res.status(200).json({
-            ok: true,
-            presupuesto: presupuestoGuardado
+            ok: true
         })
     });
 
@@ -76,11 +70,11 @@ app.post('/', (req, res)=>{
 
 app.put('/:id', function(req, res, next){  
     //findByIdAndUpdate --> busca un documento con su id y lo modifica
-    Presupuesto.findByIdAndUpdate(req.params.id, req.body, function(err, datos){
+    Articulo.findByIdAndUpdate(req.params.id, req.body, function(err, datos){
         if (err) return next(err);
         res.status(201).json({
             ok: 'true',
-            mensaje: 'Presupuesto actualizada'
+            mensaje: 'Artículo actualizado'
         });
     });
 
@@ -90,9 +84,9 @@ app.put('/:id', function(req, res, next){
 
 app.delete('/:id', function(req, res, error){
     //findByIdAndRemove --> busca un documento con su id y lo elimina
-    Presupuesto.findByIdAndRemove(req.params.id, function(err, datos){
+    Articulo.findByIdAndRemove(req.params.id, function(err, datos){
         if (err) return next(err);
-        var mensaje = 'Presupuesto' + datos.proveedor + 'eliminado'; // para ver el proveedor del eliminado
+        var mensaje = 'Artículo eliminado'; // para ver el nombre del eliminado
         res.status(201).json({
             ok: 'true',
             mensaje: mensaje

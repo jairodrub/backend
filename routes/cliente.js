@@ -7,6 +7,22 @@ var app = express();
 
 // Peticion GET
 
+app.get('/',(req, res, next) => {
+    Cliente.find({}).exec((err, clientes)=>{
+        if(err){ //este if es en caso de que tenga errores
+            return res.status(500).json({
+                ok: false,                       
+                mensaje: 'Error acceso DB',
+                errores: err
+            })
+        }
+        res.status(200).json({
+            ok:true,
+            clientes:clientes
+        })
+    });
+})
+
 app.get('/nombre/:nombre', (req, res, next) =>{
 
     var nombre = req.params.nombre;
