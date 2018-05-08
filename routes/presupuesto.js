@@ -47,6 +47,7 @@ app.post('/', (req, res)=>{
 
     var presupuesto = new Presupuesto({
         cliente: body.cliente,
+        cif: body.cif,
         fecha: body.fecha,
         items: body.items,
         suma: body.suma,
