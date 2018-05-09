@@ -23,8 +23,9 @@ app.get('/', (req, res, next) =>{
     });   
 });
 
-app.get('/:id', function(req, res, next){
-    Presupuesto.findById(req.params.id, (err, presupuesto)=>{
+app.get('/cliente', (req, res, next) =>{
+
+    Presupuesto.aggregate([{$group:{_id:{cliente:"$cliente"},total:{$sum:"$total"}}}]).exec((err, datos)=>{
         if(err){ //este if es en caso de que tenga errores
             return res.status(500).json({
                 ok: false,                       
@@ -34,10 +35,10 @@ app.get('/:id', function(req, res, next){
         }
         res.status(200).json({
             ok:true,
-            presupuesto:presupuesto
+            datos:datos
         })
-    })
-})
+    });
+});
 
 // Peticion POST
 
