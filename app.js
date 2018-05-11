@@ -14,7 +14,9 @@ var app = express();
 
 var mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://localhost:27017/erp', {promiseLibrary: require('bluebird')})
+// mongoose.connect('mongodb://localhost:27101,localhost:27102,localhost:27103/erp?replicaSet=clusterserv',
+//  {promiseLibrary: require('bluebird')})
+mongoose.connect('mongodb://localhost:27017/erp',{promiseLibrary: require('bluebird')})
 //recibe en primer lugar la url de la base de datos y luego importamos bluebird
             .then(()=>{
                 console.log('Conectado a la DB'); // .then para cuando funciona bien
