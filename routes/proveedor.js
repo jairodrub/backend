@@ -101,7 +101,7 @@ app.put('/:id', function(req, res, next){
 
 // Peticion DELETE
 
-app.delete('/:id', autentoken.verificarToken, function(req, res, error){
+app.delete('/:id', function(req, res, error){
     //findByIdAndRemove --> busca un documento con su id y lo elimina
     Proveedor.findByIdAndRemove(req.params.id, function(err, datos){
         if (err) return next(err);
